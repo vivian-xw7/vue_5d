@@ -1,29 +1,3 @@
-<template>
-  <h1>Events for Good</h1>
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-
-    <div class="pagination">
-      <router-link
-        id="prev-page"
-        :to="{ name: 'EventList', query: { page: page - 1 } }"
-        rel="prev"
-        v-if="page != 1"
-        >Previous Page</router-link
-      >
-  
-      <router-link
-        id="next-page"
-        :to="{ name: 'EventList', query: { page: page + 1 } }"
-        rel="next"
-        v-if="hasNextPage"
-        >Next Page</router-link
-      >
-    </div>
-
-  </div>
-</template>
-
 <script>
 import EventCard from '@/components/EventCard.vue'
 import EventService from '@/services/EventService.js'
@@ -59,10 +33,49 @@ export default {
       var totalPages = Math.ceil(this.totalEvents / 2)
 
       return this.page < totalPages
+    },
+    totalPages() {
+      return Math.ceil(this.totalEvents / 2)
     }
   }
 }
 </script>
+
+<template>
+  <h1>Events for Good</h1>
+  <div class="events">
+    <EventCard v-for="event in events" :key="event.id" :event="event" />
+
+    <div class="pagination">
+      <router-link
+        id="prev-page"
+        :to="{ name: 'EventList', query: { page: page - 1 } }"
+        rel="prev"
+        v-if="page != 1"
+        >Previous Page</router-link
+      >
+
+      <router-link
+        v-for="pageNumber in totalPages"
+        :key="pageNumber"
+        :to="{ name: 'EventList', query: { page: pageNumber } }"
+        :class="{ active: page === pageNumber }"
+        rel="page-number"
+      >
+        {{ pageNumber }}
+      </router-link>
+
+      <router-link
+        id="next-page"
+        :to="{ name: 'EventList', query: { page: page + 1 } }"
+        rel="next"
+        v-if="hasNextPage"
+        >Next Page</router-link
+      >
+    </div>
+  </div>
+</template>
+
 
 <style scoped>
 .events {
